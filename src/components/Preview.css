@@ -1,6 +1,7 @@
 .app-preview{
-    flex: 5;
+    flex: 6;
     overflow-y: scroll;
+    background-color: black;
 }
 
 /* スクロールバー */
@@ -50,14 +51,31 @@
     margin: 0 8%;
 }
 
-.post-like{
+.post-footer{
+    display: flex;
+}
+
+.post-date{
+    width: 500px;
+    line-height: 50px;
+    margin-left: 50px;
+}
+
+.delete-button{
+    width: 25px;
+    height: 25px;
+    line-height: 50px;
+    margin-right: 20px;
+}
+
+.post-option{
     width: 100%;
     height: 50px;
     display: flex;
     justify-content: right;
 }
 
-.post-like p{
+.post-option p{
     width: 25px;
     line-height: 50px;
     display: flex;

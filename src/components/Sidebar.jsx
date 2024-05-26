@@ -4,16 +4,15 @@ import { signInWithPopup } from 'firebase/auth'
 import { auth,provider } from '../firebase'
 import { useEffect, useState } from'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser } from '@fortawesome/free-solid-svg-icons'
+import { faUser,faRightToBracket,faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 
-const Sidebar = ({user,setUser}) => {
+const Sidebar = ({user,setUser,showConfirmLogout,setConfirmLogout}) => {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         // User is signed in
         setUser(user);
-        console.log(user);
       } else {
         // User is signed out
         setUser(null);
@@ -35,27 +34,50 @@ const Sidebar = ({user,setUser}) => {
     // ログアウト
     auth.signOut();
     setUser(null);
+    setConfirmLogout(false);
+  }
+
+  const confirmSubmit = () => {
+      setConfirmLogout(true);
+  };
+
+  const handleConfirm = (confirm) => {
+  if(confirm){
+      logout();
+  }else{
+      setConfirmLogout(false);
+  }
   }
 
   return (
     <div className='app-sidebar'>
+      <img className='logo' src='/images/React_logo.png' alt='Reactのかわいいロゴ' />
       {user? (
         <>
         <div className="login-info">
           <img className='user-icon' src={user.photoURL} alt="ユーザーアイコン" />
           <p>{user.displayName}</p>
-          <button onClick={logout}>ログアウト</button>
+          <FontAwesomeIcon className='logout-button' onClick={confirmSubmit} icon={faRightFromBracket} />
         </div>
         </>
       ) : (
         <>
           <div className="logout-info">
             <FontAwesomeIcon className='user-icon' icon={faUser} />
-            <p>ログインしていません</p>
-            <button onClick={login}>ログイン</button>
+            <p>unknown</p>
+            <FontAwesomeIcon className='login-button' onClick={login} icon={faRightToBracket} />
           </div>
         </>
       )}
+      {showConfirmLogout && (
+        <div className='confirm-dialog'>
+            <p>ログアウトしますか？</p>
+            <div className='confirm-dialog-button'>
+            <button onClick={() => handleConfirm(true)}>はい</button>
+            <button onClick={() => handleConfirm(false)}>いいえ</button>
+            </div>
+        </div>
+        )}
     </div>
   )
 }

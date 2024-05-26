@@ -1,14 +1,22 @@
 import React from 'react'
 import './Preview.css'
-import {previewPosts} from './firestore/previewPosts'
 import { useState,useEffect,useRef } from'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser } from '@fortawesome/free-solid-svg-icons'
-import { Player } from '@lottiefiles/react-lottie-player'
-import Animation_like from '../assets/Animation_like.json'
-import { upLike } from './firestore/upLike'
 
-const Preview = ({posts,setPosts}) => {
+// FontAwesomeのアイコンをインポート
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUser,faDeleteLeft } from '@fortawesome/free-solid-svg-icons'
+
+// lottiefilesのアニメーションをインポート
+import { Player } from '@lottiefiles/react-lottie-player'
+// ダウンロードしたアニメーション(json)をインポート
+import Animation_like from '../assets/Animation_like.json'
+
+// firestoreにいいねを増やす処理をコンポーネントから取得
+import { previewPosts,upLike,deletePost } from './firestore/firestoreAccess'
+
+const Preview = ({posts,setPosts,user,showConfirmDelete,setConfirmDelete}) => {
+    const [selectedPost, setSelectedPost] = useState(null);
+
     useEffect(() => {
         const getPosts = async () => {
         try {
@@ -21,8 +29,8 @@ const Preview = ({posts,setPosts}) => {
             getPosts();
         }, []);
 
+    // lottieアニメーション用
     const lottieRef = useRef({});
-
     const defaultOptions = {
         loop:false,
         autoplay:false,
@@ -31,7 +39,7 @@ const Preview = ({posts,setPosts}) => {
             preserveAspectRatio: 'xMidYMid slice'
         }
     }
-
+    // いいねボタンアニメーション&いいね増加処理
     const onLike = async(post) => {
         if(lottieRef.current[post.id]){
             lottieRef.current[post.id].play();
@@ -41,6 +49,25 @@ const Preview = ({posts,setPosts}) => {
             const updatedPosts = posts.map(p => (p.id === updatedPost.id ? updatedPost : p));
             setPosts(updatedPosts);
         }
+    }
+
+    const onDelete = async(post) => {
+        const updatePosts = await deletePost(post);
+        setPosts(updatePosts);
+        setConfirmDelete(false);
+    }
+
+    const confirmSubmit = (post) => {
+        setConfirmDelete(true);
+        setSelectedPost(post)
+    };
+
+    const handleConfirm = async (confirm,post) => {
+    if(confirm){
+        await onDelete(post);
+    }else{
+        setConfirmDelete(false);
+    }
     }
 
       // 改行を <br> タグに変換する関数
@@ -53,10 +80,17 @@ const Preview = ({posts,setPosts}) => {
         ));
     };
 
+    // Firebaseのタイムスタンプを日付と時刻にフォーマットする関数
+    const formatDateTime = (timestamp) => {
+        const date = timestamp.toDate();
+        return `${date.toLocaleDateString()}　${date.toLocaleTimeString()}`;
+    };
+
     return (
     <div className='app-preview'>
         <div className="content-panels">
             {posts.map((post) => (
+                <>
                 <div key={post.id} className='content-panel'>
                     <div className="post-user">
                         {post.usericon == "unknown" ? (
@@ -69,17 +103,37 @@ const Preview = ({posts,setPosts}) => {
                     <div className="post-text">
                         <p>{formatText(post.text)}</p>
                     </div>
-                    <div className="post-like">
-                        <p>{post.like}</p>
-                        <div className='like-button' onClick={() => onLike(post)}>
-                            <Player
-                                option={defaultOptions}
-                                src={Animation_like}
-                                ref={el => lottieRef.current[post.id] = el}
-                            />
+                    <div className='post-footer'>
+                        <div className="post-date">
+                            <p>{formatDateTime(post.createdAt)}</p>
+                        </div>
+                        <div className="post-option">
+                            {user && user.uid === post.userid && (
+                                <div className='delete-button' onClick={() => confirmSubmit(post)}>
+                                    <FontAwesomeIcon icon={faDeleteLeft} />
+                                </div>
+                            )}
+                            <p>{post.like}</p>
+                            <div className='like-button' onClick={() => onLike(post)}>
+                                <Player
+                                    option={defaultOptions}
+                                    src={Animation_like}
+                                    ref={el => lottieRef.current[post.id] = el}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
+                {showConfirmDelete && selectedPost.id == post.id &&(
+                    <div className='confirm-dialog'>
+                        <p>この投稿を削除しますか？</p>
+                        <div className='confirm-dialog-button'>
+                        <button onClick={() => handleConfirm(true,post)}>はい</button>
+                        <button onClick={() => handleConfirm(false,null)}>いいえ</button>
+                    </div>
+                </div>
+                )}
+                </>
             ))}
         </div>
     </div>
