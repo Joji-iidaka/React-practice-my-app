@@ -7,6 +7,19 @@ import { previewPosts } from './firestore/previewPosts';
 const Editorbar = ({ user, setPosts }) => {
   const [text, setText] = useState('');
 
+  // 折り返し地点で改行を挿入する関数
+  const insertLineBreaks = (text, lineLength) => {
+    const lines = [];
+    let position = 0;
+    while (position < text.length) {
+      let line = text.slice(position, position + lineLength);
+      lines.push(line);
+      position += lineLength;
+    }
+    return lines.join('\n');
+  };
+
+
   const submitButton = async () => {
     if (text.trim() !== '') {
       try {
@@ -17,8 +30,12 @@ const Editorbar = ({ user, setPosts }) => {
           usericon = user.photoURL;
           username = user.displayName;
         }
+
+        // テキストに折り返し地点で改行を挿入
+        const formattedText = insertLineBreaks(text, 35);
+
         await addDoc(collection(db, 'posts'), {
-          text: text,
+          text: formattedText,
           uid: new Date().toISOString(), // Firebaseのタイムスタンプ形式に変更
           usericon: usericon,
           userName: username,

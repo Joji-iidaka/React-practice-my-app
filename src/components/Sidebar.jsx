@@ -44,16 +44,16 @@ const Sidebar = ({user,setUser}) => {
         <div className="login-info">
           <img className='user-icon' src={user.photoURL} alt="ユーザーアイコン" />
           <p>{user.displayName}</p>
+          <button onClick={logout}>ログアウト</button>
         </div>
-        <button onClick={logout}>ログアウト</button>
         </>
       ) : (
         <>
           <div className="logout-info">
             <FontAwesomeIcon className='user-icon' icon={faUser} />
-            <p>ログインしてください</p>
+            <p>ログインしていません</p>
+            <button onClick={login}>ログイン</button>
           </div>
-          <button onClick={login}>ログイン</button>
         </>
       )}
     </div>

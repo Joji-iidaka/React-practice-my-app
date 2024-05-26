@@ -1,4 +1,28 @@
 .app-editorbar{
     flex: 3;
-    background-color:aqua;
+    height: 100%;
+}
+
+.edit-text{
+    height: 50%;
+}
+
+textarea {
+    width: 95%;
+    height: 100%;
+    margin: 5px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    resize: vertical;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    overflow-wrap: break-word;
+}
+
+textarea:focus {
+    border-color: #66afe9;
+    box-shadow: 0 0 8px rgba(102, 175, 233, 0.6);
+    outline: none;
 }
