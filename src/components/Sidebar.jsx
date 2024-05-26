@@ -13,6 +13,7 @@ const Sidebar = ({user,setUser}) => {
       if (user) {
         // User is signed in
         setUser(user);
+        console.log(user);
       } else {
         // User is signed out
         setUser(null);
