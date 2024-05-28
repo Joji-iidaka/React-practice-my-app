@@ -19,8 +19,10 @@ const previewPosts = async () => {
 const upLike = async (post) => {
 
     const posts_doc = doc(db, 'posts',post.id);
+    const like_now = await getDoc(posts_doc);
+    const updatedLike = like_now.data().like + 1;
     await updateDoc(posts_doc, {
-        like: post.like + 1,
+        like: updatedLike,
     });
 
     const updatePostSnapshot = await getDoc(posts_doc);
