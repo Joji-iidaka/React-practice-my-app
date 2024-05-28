@@ -1,0 +1,32 @@
+.app-sidebar{
+    flex: 1;
+    background-color: black;
+}
+
+.logo{
+    width: 100px;
+    margin: 10px 0 0 10px;
+}
+
+.login-info,.logout-info{
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.login-info .user-icon,.logout-info .user-icon{
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    margin: 0 auto;
+}
+
+.login-button , .logout-button{
+    background-color: rgb(63, 156, 255);
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    padding: 10px;
+    cursor: pointer;
+    margin-top: 30px;
+}

@@ -1,32 +1,24 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
+import Sidebar from './components/Sidebar';
+import Preview from './components/Preview';
+import Editorbar from './components/Editorbar';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [user, setUser] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [showConfirmDelete, setConfirmDelete] = useState(false);
+  const [showConfirmLogout, setConfirmLogout] = useState(false);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-    </>
-  )
+    <div className="App">
+      <Sidebar user={user} setUser={setUser} showConfirmLogout={showConfirmLogout} setConfirmLogout={setConfirmLogout}/>
+      <Preview posts={posts} setPosts={setPosts} user={user} showConfirmDelete={showConfirmDelete} setConfirmDelete={setConfirmDelete}/>
+      <Editorbar user={user} setPosts={setPosts} showConfirm={showConfirm} setShowConfirm={setShowConfirm} />
+      {(showConfirm || showConfirmDelete || showConfirmLogout )&& <div className="overlay"></div>}
+    </div>
+  );
 }
 
-export default App
+export default App;
